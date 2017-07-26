@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Tiny-骨骼动画</title>
+  <meta charset="utf-8">
+  <script src="https://a.alipayobjects.com/g/tiny/tiny/1.0.1/tiny.js"></script>
+  <script src="https://a.alipayobjects.com/g/tiny-plugins/tinyjs-plugin-dragonbones/0.0.1/index.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2,minimum-scale=1,user-scalable=1">
+  <style type="text/css">
+    body,
+    html,
+    canvas {
+      padding: 0;
+      margin: 0;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+    }
+  </style>
+</head>
+
+<body>
+
+  <script>
+    Tiny.Loader
+      .add("dragonBonesData", "./resource/Dragon/Dragon_ske.json")
+      .add("textureDataA", "./resource/Dragon/Dragon_tex.json")
+      .add("textureA", "./resource/Dragon/Dragon_tex.png")
+      .load(initGame);
+
+    function initGame() {
+      var config = {
+        showFPS: true, // 显示帧频
+        dpi: 1, // 分辨率
+        renderOptions: {
+          backgroundColor: 0x2a3145 // 画布背景色
+        }
+      };
+
+      // 初始化App
+      var app = new Tiny.Application(config);
+
+      // 新建场景
+      var container = new Tiny.Container();
+
+      // 启动场景
+      app.run(container);
+
+      initDragonBones(app, container);
+    }
+
+    function initDragonBones(app, container) {
+
+      //设置别名
+      var dragonBones = Tiny.DragonBones;
+      var resources = Tiny.Loader.resources;
+ 
+      // 取出来骨骼数据
+      var dragonBonesData = resources["dragonBonesData"].data;
+
+      // 从资源中取出来骨骼纹理数据
+      var textureData = resources["textureDataA"].data;
+
+      // 从资源中取出来骨骼纹理图片
+      var texture = resources["textureA"].texture;
+
+      // 添加骨骼数据
+      dragonBones.addDragonBonesData(dragonBonesData);
+
+      // 添加纹理
+      dragonBones.addTextureAtlasData(textureData, texture);
+
+      // 创建一个骨骼精灵  
+      var armatureDisplay = dragonBones.buildArmatureDisplay('Dragon');
+  
+      // 设置精灵在场景中的位置
+      armatureDisplay.x = app.renderer.width * 0.5;
+      armatureDisplay.y = app.renderer.height * 0.5 + 50;
+      armatureDisplay.scale.set(0.3, 0.3);
+
+      // 播放骨骼动画 DragonBones Pro 默认生成四个动作 fall、jump、stand、walk
+      var animationState = armatureDisplay.play('walk');
+
+      // 把骨骼对象添加到场景中
+      container.addChild(armatureDisplay);
+
+
+    }
+  </script>
+</body>
+
+</html>
